@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         params.append("key", process.env.SMM_API_KEY);
         params.append("action", "add");
         params.append("service", service.toString());
-        params.append("url", link);
+        params.append("link", link);
         params.append("quantity", quantity.toString());
 
         if (comments) params.append("comments", Array.isArray(comments) ? comments.join("|") : comments);
