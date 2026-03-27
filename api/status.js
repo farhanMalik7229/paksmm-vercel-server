@@ -16,7 +16,10 @@ export default async function handler(req, res) {
     try {
         const response = await fetch(process.env.SMM_API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" 
+            },
             body: new URLSearchParams({
                 key: process.env.SMM_API_KEY,
                 action: "status",
@@ -24,8 +27,15 @@ export default async function handler(req, res) {
             }),
         });
 
-        res.status(200).json(await response.json());
-    } catch {
-        res.status(500).json({ error: "Status check failed" });
+        const data = await response.json();
+        
+        // Explicitly extract and return start_count and remains counts
+        res.status(200).json({
+            ...data,
+            start_count: data.start_count || 0,
+            remains: data.remains || 0
+        });
+    } catch (e) {
+        res.status(500).json({ error: "Status check failed", details: e.message });
     }
 }
